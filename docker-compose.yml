@@ -1,0 +1,39 @@
+version: '3.8'
+ 
+services:
+  web:
+    build: .
+    volumes:
+      - ./django_blog:/app  # Mapuj katalog django_blog na /app w kontenerze
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://bloguser:blogpass@db:5432/blogdb
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - db
+ 
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=blogdb
+      - POSTGRES_USER=bloguser
+      - POSTGRES_PASSWORD=blogpass
+ 
+  nginx:
+    image: nginx:1.21
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - static_volume:/app/static
+      - media_volume:/app/media
+    ports:
+      - "8080:80"
+    depends_on:
+      - web
+ 
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
