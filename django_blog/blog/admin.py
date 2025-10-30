@@ -9,7 +9,7 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('post', 'author', 'created_date', 'published_date')
+    list_display = ('post', 'author', 'created_date')
     list_filter = ('approved_comment', 'created_date')
     search_fields = ('post', 'author')
 
@@ -17,3 +17,4 @@ class CommentAdmin(admin.ModelAdmin):
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):
     list_display = ('post', 'user', 'created_date')
+
