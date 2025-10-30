@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mój Blog{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Niestandardowy CSS -->
+    {% load static %}
+    <link href="{% static "blog/css/custom.css" %}" rel="stylesheet">
+
+    <!-- Blok extra css -->
+    {% block extra_css %} {% endblock %} 
+</head>
+<body>
+    <div class="paralax-bg"></div>
+
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'post_list' %}">
+                <i class="fa-solid fa-open"></i>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li>
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'post_list' %}">
+                            <i class="fas fa-home me-1"></i> Strona główna
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Odkryj Świat Blogowania</h1>
+            <p class="hero-subtitle">Podziel się swoimi przemyśleniami i dołącz do społeczności</p>
+        </div>
+    </section>
+
+    <main class="container my-5">
+
+    </main>
+
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="gradient-text">Dlaczego nasz blog?</h2>
+                <p class="lead">Odkryj wyjątkowe funkcje, które czyniąnas wyjątkowymi</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-pen-fancy"></i>
+                        </div>
+                        <h4>Ładna treść</h4>
+                        <p>Twórz piękne posty z łatwym formatowaniem</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h4>Interakcja</h4>
+                        <p>Polubienia i komentarze dla lepszej społeczności</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h4>Responsywność</h4>
+                        <p>Pełna responsywność na wszystkich urządzeniach</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h4 class="gradient-text">Blog</h4>
+                    <p>Najlepsze miejsce do dzielenia się swoimi przemyśleniami.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Nawigacja</h5>
+                    <div class="footer-links">
+                        <a href="{% url 'post_list' %}">Strona główna</a>
+                        <a href="#">O nas</a>
+                        <a href="#">Kontakt</a>
+                        <a href="#">Polityka prywatności</a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Dołącz do nas</h5>
+                    <p>Zapisz się do naszego newslettera, aby otrzymywać najnowsze aktualizacje.</p>
+                    <form>
+                        <div class="input-group mb-3">
+                            <input type="email" class="form-control" placeholder="Twój email" aria-label="Email">
+                            <button class="btn btn-primary" type="button">Zapisz się</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+                <p class="mt-3 mb-0">&copy; 2025. Wszystkie prawa zastrzeżone.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Effects -->
+    <script src="{% static 'blog/js/effects.js' %}"></script>
+
+    {% block scripts %} {% endblock %}
+</body>
+</html>
