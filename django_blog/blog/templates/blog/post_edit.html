@@ -1,0 +1,12 @@
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>{% if form.instance.pk %}Edytuj post{% else %}Nowy post{% endif %}</h2>
+        <form method="POST" class="post-form">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary mt-3">Zapisz</button>
+        </form>
+    </div>
+{% endblock %}
