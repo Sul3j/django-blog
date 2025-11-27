@@ -16,3 +16,15 @@ class PostForm(forms.ModelForm):
             'title': 'Tytuł',
             'content': 'Treść'
         }
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('text',)
+        widgets = {
+            'text': forms.Textarea(attrs={'class': 'form-control', 'rows': 4})
+        }
+
+        labels = {
+            'text': 'Komentarz'
+        }
