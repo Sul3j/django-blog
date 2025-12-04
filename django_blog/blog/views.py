@@ -23,13 +23,13 @@ def post_detail(request, pk):
             comment.user = request.user
             comment.save()
             return redirect('post_detail', pk=post.pk)
-        else:
-            form = CommentForm()
+    else:
+        form = CommentForm()
         
-        return render(request, 'blog/post_detail.html', {
-            'post': post,
-            'form': form
-        })
+    return render(request, 'blog/post_detail.html', {
+        'post': post,
+        'form': form
+    })
 
 @login_required
 def post_new(request):

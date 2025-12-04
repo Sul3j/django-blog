@@ -2,5 +2,99 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+<div class="container mt-5">
+    <article class="blog-post">
+        <div class="blog-post-header">
+            <h1 class="blog-post-title">{{ post.title }}</h1>
+            <div class="blog-post-meta">
+                <span class="post-author">
+                    <i class="fas fa-user"></i> {{ post.author }}
+                </span>
+                <span class="post-date">
+                    <i class="fas fa-calendar"></i> {{ post.published_date|date:"d M Y, H:i" }}
+                </span>
+                <span class="post-likes">
+                    <i class="fas fa-heart"></i> {{ post.likes.count }}
+                </span>
+            </div>
+        </div>
 
+        <div class="blog-post-content">
+            {{ post.content|linebreaks }}
+        </div>
+
+        <div class="blog-post-actions mt-4">
+            {% if user.is_authenticated %}
+            <button class="btn btn-outline-primary like-btn" data-post-id="{{ post.id }}">
+                <i class="fas fa-heart"></i>
+                {% if user in post.likes.all %}Unlike{% else %}Like{% endif %}
+            </button>
+            {% endif %}
+        </div>
+    </article>
+
+    <section class="comments-section mt-5">
+        <h3>Komentarze ({{ post.comments.count }})</h3>
+        
+        {% for comment in post.comments.all %}
+        <div class="comment card mt-3">
+            <div class="card-body">
+                <div class="comment-header">
+                    <strong>{{ comment.author }}</strong>
+                    <small class="text-muted">{{ comment.created_date|date:"d M Y, H:i" }}</small>
+                </div>
+                <p class="comment-text">{{ comment.text|linebreaks }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">Brak komentarzy. Bądź pierwszy!</p>
+        {% endfor %}
+
+        <!-- Formularz komentarza -->
+        {% if user.is_authenticated %}
+        <div class="add-comment mt-4">
+            <h4>Dodaj komentarz</h4>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="auth-btn btn-login mt-3">
+                    <i class="fas fa-comment"></i> Dodaj komentarz
+                </button>
+            </form>
+        </div>
+        {% else %}
+        <p class="mt-3">
+            <a href="{% url 'login' %}" class="auth-btn auth-btn-outline">
+                <i class="fas fa-sign-in-alt"></i> Zaloguj się, aby dodać komentarz
+            </a>
+        </p>
+        {% endif %}
+    </section>
+</div>
+{% if user.is_authenticated %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const likeButtons = document.querySelectorAll('.like-btn');
+    likeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const postId = this.dataset.postId;
+            fetch(`/post/${postId}/like/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.textContent = data.liked ? 'Unlike' : 'Like';
+                document.querySelector(`.like-count[data-post-id="${postId}"]`).textContent = 
+                    `${data.likes_count} polubień`;
+            });
+        });
+    });
+});
+</script>
+{% endif %}
 {% endblock %}
