@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Comment
+from .models import Post, Comment, Newsletter
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -27,4 +27,15 @@ class CommentForm(forms.ModelForm):
 
         labels = {
             'text': 'Komentarz'
+        }
+
+class NewsletterForm(forms.ModelForm):
+    class Meta:
+        model = Newsletter
+        fields = ('email',)
+        widgets = {
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Twój email'})
+        }
+        labels = {
+            'email': ''
         }

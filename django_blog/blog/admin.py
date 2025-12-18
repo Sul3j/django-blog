@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment, Like
+from .models import Post, Comment, Like, Newsletter
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -18,3 +18,8 @@ class CommentAdmin(admin.ModelAdmin):
 class LikeAdmin(admin.ModelAdmin):
     list_display = ('post', 'user', 'created_date')
 
+@admin.register(Newsletter)
+class NewsletterAdmin(admin.ModelAdmin):
+    list_display = ('email', 'subscribed_date', 'is_active')
+    list_filter = ('is_active', 'subscribed_date')
+    search_fields = ('email',)

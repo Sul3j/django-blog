@@ -18,7 +18,7 @@
 
     <!-- Niestandardowy CSS -->
     {% load static %}
-    <link href="{% static "blog/css/custom.css" %}" rel="stylesheet">
+    <link href="{% static 'blog/css/custom.css' %}" rel="stylesheet">
 
     <!-- Blok extra css -->
     {% block extra_css %} {% endblock %} 
@@ -29,7 +29,7 @@
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
             <a class="navbar-brand" href="{% url 'post_list' %}">
-                <i class="fa-solid fa-open"></i>
+                <i class="fa-solid fa-pen"></i>Blog
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -152,10 +152,11 @@
                 <div class="col-md-4 mb-4">
                     <h5>Dołącz do nas</h5>
                     <p>Zapisz się do naszego newslettera, aby otrzymywać najnowsze aktualizacje.</p>
-                    <form>
+                    <form method="POST" action="{% url 'newsletter_signup' %}">
+                        {% csrf_token %}
                         <div class="input-group mb-3">
-                            <input type="email" class="form-control" placeholder="Twój email" aria-label="Email">
-                            <button class="btn btn-primary" type="button">Zapisz się</button>
+                            <input type="email" name="email" class="form-control" placeholder="Twój email" aria-label="Email" required>
+                            <button class="btn btn-primary" type="submit">Zapisz się</button>
                         </div>
                     </form>
                 </div>
