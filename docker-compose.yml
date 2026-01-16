@@ -4,36 +4,57 @@ services:
   web:
     build: .
     volumes:
-      - ./django_blog:/app  # Mapuj katalog django_blog na /app w kontenerze
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
     ports:
-      - "8000:8000"
-    environment:
-      - DATABASE_URL=postgresql://bloguser:blogpass@db:5432/blogdb
-      - PYTHONUNBUFFERED=1
+      - "8000"
+    env_file:
+      - .env
     depends_on:
       - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
  
   db:
-    image: postgres:13
+    image: postgres:15-alpine
+    restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_DB=blogdb
-      - POSTGRES_USER=bloguser
-      - POSTGRES_PASSWORD=blogpass
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
  
   nginx:
-    image: nginx:1.21
+    image: nginx:1.25-alpine
+    restart: always
     volumes:
       - ./nginx:/etc/nginx/conf.d
-      - static_volume:/app/static
+      - static_volume:/app/staticfiles
       - media_volume:/app/media
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - web
- 
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    
 volumes:
   postgres_data:
   static_volume:

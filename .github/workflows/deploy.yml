@@ -8,13 +8,14 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    evironment: production
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Deploy to VPS
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.VPS_HOST }}
         username: ${{ secrets.VPS_USERNAME }}
@@ -23,15 +24,16 @@ jobs:
         script: |
           cd ${{ secrets.VPS_PROJECT_PATH }}
           git pull origin main
+          docker-compose build --no-cache
           docker-compose down
-          docker-compose build
           docker-compose up -d
-          docker-compose exec -T web python manage.py migrate
-          docker-compose exec -T web python manage.py collectstatic --noinput
+          sleep 10
+          docker-compose exec -T web python manage.py migrate --noinput
+          docker-compose exec -T web python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@example.com', 'changeme123')" || true
           docker system prune -f
 
     - name: Check deployment status
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.VPS_HOST }}
         username: ${{ secrets.VPS_USERNAME }}
@@ -40,4 +42,15 @@ jobs:
         script: |
           cd ${{ secrets.VPS_PROJECT_PATH }}
           docker-compose ps
+          docker-compose logs --tail=50 web
+    
+    - name: Notify deployment result
+      if: always()
+      run: |
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "✅ Deployment successful!"
+        else
+          echo "❌ Deployment failed!"
+          exit 1
+        fi
  

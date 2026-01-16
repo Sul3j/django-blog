@@ -9,18 +9,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@4c^af$n3zk&27z*6fov2+sokb*6(z4k=o%xz#msx98s0@$&c7'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-@4c^af$n3zk&27z*6fov2+sokb*6(z4k=o%xz#msx98s0@$&c7')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = os.eviron.get('ALLOWED_HOSTS', 'localhost','127.0.0.1').split(',')
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8080',
-    'http://127.0.0.1:8080',
-    'http://0.0.0.0:8080',
-]
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'http://localhost:8080').split(',')
 
 
 # Application definition
@@ -77,11 +73,11 @@ WSGI_APPLICATION = 'blog_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'blogdb',
-        'USER': 'bloguser',
-        'PASSWORD': 'blogpass',
-        'HOST': 'db',
-        'PORT': '5432'
+        'NAME': os.environ.get('POSTGRES_DB', 'blogdb'),
+        'USER': os.environ.get('POSTGRES_USER','bloguser'),
+        'PASSWORD': os.environ('POSTGRES_PASSWORD', 'blogpass'),
+        'HOST': os.environ('POSTGRES_HOST', 'db'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432')
     }
 }
 
@@ -145,7 +141,14 @@ LOGIN_REDIRECT_URL = 'post_list'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = '/'
 
-CRSF_COOKIE_SECURE = False
-SESSION_COOKIES_SECURE = False
-CRSF_COOKIE_HTTPONLY = False
+CRSF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIES_SECURE = not DEBUG
+CRSF_COOKIE_HTTPONLY = True
 SESSION_COOKIES_HTTPONLY = True
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
