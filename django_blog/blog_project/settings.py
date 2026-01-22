@@ -14,7 +14,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-@4c^af$n3zk&27z*6fov2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.eviron.get('ALLOWED_HOSTS', 'localhost','127.0.0.1').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'http://localhost:8080').split(',')
 
@@ -75,8 +75,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('POSTGRES_DB', 'blogdb'),
         'USER': os.environ.get('POSTGRES_USER','bloguser'),
-        'PASSWORD': os.environ('POSTGRES_PASSWORD', 'blogpass'),
-        'HOST': os.environ('POSTGRES_HOST', 'db'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'blogpass'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'db'),
         'PORT': os.environ.get('POSTGRES_PORT', '5432')
     }
 }
@@ -106,9 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pl-pl'
 TIME_ZONE = 'Europe/Warsaw'
-
-
-TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -141,10 +138,10 @@ LOGIN_REDIRECT_URL = 'post_list'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = '/'
 
-CRSF_COOKIE_SECURE = not DEBUG
-SESSION_COOKIES_SECURE = not DEBUG
-CRSF_COOKIE_HTTPONLY = True
-SESSION_COOKIES_HTTPONLY = True
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = True
 
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
